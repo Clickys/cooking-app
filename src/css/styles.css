@@ -1,0 +1,50 @@
+/* COLOR VARIABLES */
+:root {
+    --color-1: #a2bce0;
+    --color-2: #0b5563;
+    --color-3: #beb8eb;
+    --color-4: #5e5c6c;
+    --color-5: #f78154;
+}
+/* **************** */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: rgb(31, 106, 172);
+}
+
+/* SECTION SEARCH HEADER*/
+.search__logo-icon {
+    width: 5rem;
+}
+.search__logo-text {
+}
+/* baker icon sticky top */
+
+.search-input {
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #fff;
+    outline: 0;
+    border-radius: 25px;
+}
+
+.search-input::placeholder {
+    font-size: 1.1rem;
+    color: var(--color-4);
+    font-weight: 500;
+}
+
+.search-input-icon {
+    background-color: #fff;
+    border-color: #fff;
+    cursor: pointer;
+    width: 4rem;
+    height: 4rem;
+}
+
+/* **************** */
+/* RECIPE SECTIONS */
+.recipes-section {
+    min-height: 20vh;
+    background-color: var(--color-5);
+}
