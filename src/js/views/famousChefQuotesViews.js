@@ -1,10 +1,12 @@
-export const renderRandomQote = ( { name, quote } ) => {
-    const quoteTextPosition = document.querySelector( '.quote-text' );
-    const quoteAuthorPosition = document.querySelector( '.quote-text-author' );
+import { DOMElements } from './base';
 
-    quoteTextPosition.textContent = '';
-    quoteAuthorPosition.textContent = '';
-
-    quoteTextPosition.textContent = quote;
-    quoteAuthorPosition.textContent = name;
+export const renderRandomQuote = ( { name, quote } ) => {
+    clearRandomQuote();
+    DOMElements.quoteText.textContent = quote;
+    DOMElements.quoteTextAuthor.textContent = name;
 };
+
+function clearRandomQuote() {
+    DOMElements.quoteText.textContent = '';
+    DOMElements.quoteTextAuthor.textContent = '';
+}

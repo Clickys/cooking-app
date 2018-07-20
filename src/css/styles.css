@@ -45,6 +45,44 @@ body {
 /* **************** */
 /* RECIPE SECTIONS */
 .recipes-section {
-    min-height: 20vh;
-    background-color: var(--color-5);
+}
+
+.food {
+    transition: all 0.5s;
+    cursor: pointer;
+    max-height: 15rem;
+    min-height: 15rem;
+}
+
+.food:hover {
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+.food-title {
+    color: var(--color-5);
+}
+.food-info {
+    color: var(--color-1);
+}
+.food-img {
+    max-height: 85px;
+}
+
+/* LOADTER */
+
+.loader {
+    width: 5rem;
+    animation-name: loaderAnimation;
+    animation-duration: 0.7s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loaderAnimation {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
