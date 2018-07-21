@@ -10,7 +10,7 @@ export const DOMElements = {
 
 export const renderLoader = ( parent ) => {
     const markup = `
-        <div class="col-8 mx-auto text-center loader">
+        <div class="col-8 mx-auto d-flex justify-content-center align-items-center  loader">
             <svg>
                 <use href="${ cookingImage }#Layer_1"></use>
             </svg>
@@ -23,4 +23,12 @@ export const renderLoader = ( parent ) => {
 export const clearLoader = () => {
     const loader = document.querySelector( '.loader' );
     if ( loader ) loader.parentElement.removeChild( loader );
+};
+
+export const pressEnter = ( e, fn ) => {
+    if ( e.keyCode === 13 ) {
+        if ( DOMElements.searchInput.value ) {
+            fn();
+        }
+    }
 };

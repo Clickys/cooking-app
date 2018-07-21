@@ -4,14 +4,12 @@ import { renderRandomQuote } from './views/famousChefQuotesViews';
 import SearchFood from './models/SearchFood';
 
 import * as searchFoodView from './views/searchFoodView';
-import { DOMElements, renderLoader, clearLoader } from './views/base';
+import {
+    DOMElements, renderLoader, clearLoader, pressEnter,
+} from './views/base';
+import GetFoodIng from './models/GetFoodIng';
 
 const state = {};
-
-window.addEventListener( 'load', ( e ) => {
-    const quote = new RandomQuote();
-    renderRandomQuote( quote.pickRandomQuote() );
-} );
 
 const controlSearchFood = async () => {
     // get search value from input
@@ -39,3 +37,15 @@ const controlSearchFood = async () => {
 DOMElements.searchInputIcon.addEventListener( 'click', ( e ) => {
     controlSearchFood();
 } );
+window.addEventListener( 'load', ( e ) => {
+    const quote = new RandomQuote();
+    renderRandomQuote( quote.pickRandomQuote() );
+} );
+
+document.addEventListener( 'keypress', ( e ) => {
+    pressEnter( e, controlSearchFood );
+} );
+
+const x = new GetFoodIng( 12 );
+
+x.getFood();
