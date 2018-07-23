@@ -7,7 +7,7 @@ import * as searchFoodView from './views/searchFoodView';
 import {
     DOMElements, renderLoader, clearLoader, pressEnter,
 } from './views/base';
-import GetFoodIng from './models/GetFoodIng';
+import Recipe from './models/GetFoodIng';
 
 const state = {};
 
@@ -33,6 +33,25 @@ const controlSearchFood = async () => {
         }
     }
 };
+const controlRecipe = async () => {
+    const id = location.hash.replace( /#/, '' );
+
+    if ( id ) {
+        // CREATE NEW OBJECT WITH THE CLICKED RECIPE
+        state.newRecipe = new Recipe( id );
+
+        // CHECK IF NEW RECIPE EXIST
+        try {
+            // IF NEW  RECIPE EXIST ADD TO STATE THE RECIPE
+            await state.newRecipe.getRecipe();
+            console.log( state.newRecipe );
+
+            // RENDER RECIPE TO THE DOM
+        } catch ( error ) {
+            console.log( error );
+        }
+    }
+};
 
 DOMElements.searchInputIcon.addEventListener( 'click', ( e ) => {
     controlSearchFood();
@@ -46,6 +65,8 @@ document.addEventListener( 'keypress', ( e ) => {
     pressEnter( e, controlSearchFood );
 } );
 
-const x = new GetFoodIng( 12 );
-
-x.getFood();
+DOMElements.recipeResults.addEventListener( 'click', ( e ) => {
+    if ( e.target.closest( '.food' ) ) {
+        controlRecipe();
+    }
+} );
