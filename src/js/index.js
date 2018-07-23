@@ -5,8 +5,13 @@ import SearchFood from './models/SearchFood';
 
 import * as searchFoodView from './views/searchFoodView';
 import {
-    DOMElements, renderLoader, clearLoader, pressEnter,
+    DOMElements,
+    renderLoader,
+    clearLoader,
+    pressEnter,
+    recipeRenderLoader,
 } from './views/base';
+import { renderRecipe, clearRenderRecipe } from './views/getFoodIngView';
 import Recipe from './models/GetFoodIng';
 
 const state = {};
@@ -21,7 +26,7 @@ const controlSearchFood = async () => {
         try {
             // search for food
             state.search = new SearchFood( searchQuery );
-            renderLoader( DOMElements.recipeResults );
+            renderLoader( DOMElements.foodResults, 'food' );
             // add to state the recipes
             await state.search.getFood();
             // clear loader
@@ -34,25 +39,30 @@ const controlSearchFood = async () => {
     }
 };
 const controlRecipe = async () => {
-    const id = location.hash.replace( /#/, '' );
+    const id = window.location.hash.replace( '#', '' );
 
+    clearRenderRecipe();
+    // CHECK IF ID EXIST
     if ( id ) {
-        // CREATE NEW OBJECT WITH THE CLICKED RECIPE
-        state.newRecipe = new Recipe( id );
-
-        // CHECK IF NEW RECIPE EXIST
         try {
-            // IF NEW  RECIPE EXIST ADD TO STATE THE RECIPE
+            renderLoader( DOMElements.recipeResults, 'recipe' );
+
+            state.newRecipe = new Recipe( id );
+            // GET RECIPE INGRIDIENTS
             await state.newRecipe.getRecipe();
-            console.log( state.newRecipe );
+            clearLoader();
 
             // RENDER RECIPE TO THE DOM
+            renderRecipe( state.newRecipe.recipe );
         } catch ( error ) {
             console.log( error );
         }
     }
 };
 
+document.addEventListener( 'keypress', ( e ) => {
+    pressEnter( e, controlSearchFood );
+} );
 DOMElements.searchInputIcon.addEventListener( 'click', ( e ) => {
     controlSearchFood();
 } );
@@ -61,12 +71,6 @@ window.addEventListener( 'load', ( e ) => {
     renderRandomQuote( quote.pickRandomQuote() );
 } );
 
-document.addEventListener( 'keypress', ( e ) => {
-    pressEnter( e, controlSearchFood );
-} );
-
-DOMElements.recipeResults.addEventListener( 'click', ( e ) => {
-    if ( e.target.closest( '.food' ) ) {
-        controlRecipe();
-    }
+window.addEventListener( 'hashchange', () => {
+    controlRecipe();
 } );

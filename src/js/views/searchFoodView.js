@@ -7,33 +7,33 @@ export const clearInput = () => {
 };
 
 export const clearResultsGrid = () => {
-    DOMElements.recipeResults.innerHTML = '';
+    DOMElements.foodResults.innerHTML = '';
 };
 
 const renderRecipe = ( recipe ) => {
     const markup = `
     <div class="col-6 mb-2">
+    <a href="#${ recipe.recipe_id }">
         <div class="card food bg-transparent">
-        <img src="${ recipe.image_url }" alt="" class="card-img-top img-thumbnail food-img">
-        <div class="card-body d-flex flex-column justify-content-between recipe-main-body">
-            <a href="#${ recipe.recipe_id }">
+            <img src="${ recipe.image_url }" alt="${
+    recipe.image_url
+}" class="card-img-top img-thumbnail food-img">
+            <div class="card-body d-flex flex-column justify-content-between recipe-main-body">
                 <h5 class="card-title food-title small text-center mb-4">${ editRecipeTitle(
         recipe.title,
     ) }</h5>
-                <p class="card-text food-info small text-center recipe-publisher"><a href="${
-    recipe.publisher_url
-}"> 
- ${ editRecipePublisher( recipe.publisher ) }</a></p>
-                </a>
+                <p class="card-text food-info small text-center recipe-publisher">
+                    ${ recipe.publisher }
+                </p>
             </div>
         </div>
-    </div>
+    </a>
+</div>
     `;
-    DOMElements.recipeResults.insertAdjacentHTML( 'beforeend', markup );
+    DOMElements.foodResults.insertAdjacentHTML( 'beforeend', markup );
 };
 
 export const renderResults = ( recipes ) => {
-    console.log( recipes );
     recipes.slice( 0, 8 ).forEach( renderRecipe );
 };
 

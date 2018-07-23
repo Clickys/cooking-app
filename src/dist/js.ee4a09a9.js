@@ -5550,17 +5550,23 @@ var RandomQuote = function () {
 exports.default = RandomQuote;
 },{}],"images\\food-loader.svg":[function(require,module,exports) {
 module.exports = "/food-loader.14162e88.svg";
+},{}],"images\\recipe-loader.svg":[function(require,module,exports) {
+module.exports = "/recipe-loader.997b9347.svg";
 },{}],"js\\views\\base.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.pressEnter = exports.clearLoader = exports.renderLoader = exports.DOMElements = undefined;
+exports.pressEnter = exports.recipeRenderLoader = exports.clearLoader = exports.renderLoader = exports.DOMElements = undefined;
 
 var _foodLoader = require('../../images/food-loader.svg');
 
 var _foodLoader2 = _interopRequireDefault(_foodLoader);
+
+var _recipeLoader = require('../../images/recipe-loader.svg');
+
+var _recipeLoader2 = _interopRequireDefault(_recipeLoader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5568,12 +5574,15 @@ var DOMElements = exports.DOMElements = {
     quoteText: document.querySelector('.quote-text'),
     quoteTextAuthor: document.querySelector('.quote-text-author'),
     searchInput: document.querySelector('.search-input'),
-    recipeResults: document.querySelector('.recipes-result'),
+    foodResults: document.querySelector('.food-result'),
+    recipeResults: document.querySelector('.recipe-result'),
     searchInputIcon: document.querySelector('.search-input-icon')
 };
 
-var renderLoader = exports.renderLoader = function renderLoader(parent) {
-    var markup = '\n        <div class="col-8 mx-auto d-flex justify-content-center align-items-center  loader">\n            <svg>\n                <use href="' + _foodLoader2.default + '#Layer_1"></use>\n            </svg>\n        </div>\n    ';
+var renderLoader = exports.renderLoader = function renderLoader(parent, cookImg) {
+    var loaderSVG = void 0;
+    cookImg === 'food' ? loaderSVG = _foodLoader2.default : loaderSVG = _recipeLoader2.default;
+    var markup = '\n        <div class="col-8 mx-auto d-flex justify-content-center align-items-center  loader">\n            <svg>\n                <use href="' + loaderSVG + '#Layer_1"></use>\n            </svg>\n        </div>\n    ';
 
     parent.insertAdjacentHTML('afterbegin', markup);
 };
@@ -5583,6 +5592,11 @@ var clearLoader = exports.clearLoader = function clearLoader() {
     if (loader) loader.parentElement.removeChild(loader);
 };
 
+var recipeRenderLoader = exports.recipeRenderLoader = function recipeRenderLoader() {
+    var markup = ' <img src="' + _recipeLoader2.default + '" class="img-fluid recipeLoader">';
+    DOMElements.recipeResults.insertAdjacentHTML('afterbegin', markup);
+};
+_recipeLoader2.default;
 var pressEnter = exports.pressEnter = function pressEnter(e, fn) {
     if (e.keyCode === 13) {
         if (DOMElements.searchInput.value) {
@@ -5590,7 +5604,7 @@ var pressEnter = exports.pressEnter = function pressEnter(e, fn) {
         }
     }
 };
-},{"../../images/food-loader.svg":"images\\food-loader.svg"}],"js\\views\\famousChefQuotesViews.js":[function(require,module,exports) {
+},{"../../images/food-loader.svg":"images\\food-loader.svg","../../images/recipe-loader.svg":"images\\recipe-loader.svg"}],"js\\views\\famousChefQuotesViews.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24554,16 +24568,15 @@ var clearInput = exports.clearInput = function clearInput() {
 };
 
 var clearResultsGrid = exports.clearResultsGrid = function clearResultsGrid() {
-    _base.DOMElements.recipeResults.innerHTML = '';
+    _base.DOMElements.foodResults.innerHTML = '';
 };
 
 var renderRecipe = function renderRecipe(recipe) {
-    var markup = '\n    <div class="col-6 mb-2">\n        <div class="card food bg-transparent">\n        <img src="' + recipe.image_url + '" alt="" class="card-img-top img-thumbnail food-img">\n        <div class="card-body d-flex flex-column justify-content-between recipe-main-body">\n            <a href="#' + recipe.recipe_id + '">\n                <h5 class="card-title food-title small text-center mb-4">' + editRecipeTitle(recipe.title) + '</h5>\n                <p class="card-text food-info small text-center recipe-publisher"><a href="' + recipe.publisher_url + '"> \n ' + editRecipePublisher(recipe.publisher) + '</a></p>\n                </a>\n            </div>\n        </div>\n    </div>\n    ';
-    _base.DOMElements.recipeResults.insertAdjacentHTML('beforeend', markup);
+    var markup = '\n    <div class="col-6 mb-2">\n    <a href="#' + recipe.recipe_id + '">\n        <div class="card food bg-transparent">\n            <img src="' + recipe.image_url + '" alt="' + recipe.image_url + '" class="card-img-top img-thumbnail food-img">\n            <div class="card-body d-flex flex-column justify-content-between recipe-main-body">\n                <h5 class="card-title food-title small text-center mb-4">' + editRecipeTitle(recipe.title) + '</h5>\n                <p class="card-text food-info small text-center recipe-publisher">\n                    ' + recipe.publisher + '\n                </p>\n            </div>\n        </div>\n    </a>\n</div>\n    ';
+    _base.DOMElements.foodResults.insertAdjacentHTML('beforeend', markup);
 };
 
 var renderResults = exports.renderResults = function renderResults(recipes) {
-    console.log(recipes);
     recipes.slice(0, 8).forEach(renderRecipe);
 };
 
@@ -24600,6 +24613,33 @@ var editRecipePublisher = function editRecipePublisher(publisher) {
     }
     return publisher;
 };
+},{"./base":"js\\views\\base.js"}],"js\\views\\getFoodIngView.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.renderRecipe = exports.createIng = exports.clearRenderRecipe = undefined;
+
+var _base = require('./base');
+
+var clearRenderRecipe = exports.clearRenderRecipe = function clearRenderRecipe() {
+    _base.DOMElements.recipeResults.innerHTML = '';
+};
+var createIng = exports.createIng = function createIng(ing) {
+    return '\n        <li class="list-group-item list-ing">\n            <i class="far fa-circle"></i> ' + ing + '\n        </li>\n        ';
+};
+
+var addMessures = function addMessures(ing) {};
+var renderRecipe = exports.renderRecipe = function renderRecipe(recipe) {
+    var ingSize = recipe.ingredients.length / 2;
+    var markup = '\n    <div class="card">\n    <img src="' + recipe.image_url + '" alt="" class="card-img-top" width="200" height="200">\n    <h3 class="ing-title text-center">\n        <span>' + recipe.title + '</span>\n    </h3>\n    <div class="recipe-like mb-5 mx-auto d-flex align-items-center justify-content-center">\n        <i class="far fa-heart fa-2x"></i>\n    </div>\n    <div class="card-body">\n        <div class="ingredients-body">\n            <div class="row recipe-card-details">\n                <div class="col-6">\n                    <ul class="list-group list-group-flush">\n                        ' + recipe.ingredients.slice(0, ingSize).map(function (el) {
+        return createIng(el);
+    }).join('') + '\n\n                    </ul>\n                </div>\n                <div class="col-6">\n                <ul class="list-group list-group-flush">\n                ' + recipe.ingredients.slice(ingSize).map(function (el) {
+        return createIng(el);
+    }).join('') + '\n                </ul>\n                </div>\n            </div>\n\n        </div>\n    </div>\n</div>\n    ';
+    _base.DOMElements.recipeResults.insertAdjacentHTML('afterbegin', markup);
+};
 },{"./base":"js\\views\\base.js"}],"js\\models\\GetFoodIng.js":[function(require,module,exports) {
 'use strict';
 
@@ -24619,15 +24659,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var getFoodIng = function () {
-    function getFoodIng(id) {
-        _classCallCheck(this, getFoodIng);
+var Recipe = function () {
+    function Recipe(id) {
+        _classCallCheck(this, Recipe);
 
         this.id = id;
     }
 
-    _createClass(getFoodIng, [{
-        key: 'getFood',
+    _createClass(Recipe, [{
+        key: 'getRecipe',
         value: function () {
             var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                 var response;
@@ -24636,14 +24676,19 @@ var getFoodIng = function () {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _context.next = 2;
-                                return (0, _axios2.default)('https://cors-anywhere.herokuapp.com/http://food2fork.com/api/get?key=3f2643d59bfdcb97251f88b0a9513314&rId=47025');
+                                return (0, _axios2.default)('https://cors-anywhere.herokuapp.com/http://food2fork.com/api/get?key=3f2643d59bfdcb97251f88b0a9513314&rId=' + this.id);
 
                             case 2:
                                 response = _context.sent;
 
-                                console.log(response);
+                                console.log(response.data);
+                                _context.next = 6;
+                                return response.data.recipe;
 
-                            case 4:
+                            case 6:
+                                this.recipe = _context.sent;
+
+                            case 7:
                             case 'end':
                                 return _context.stop();
                         }
@@ -24651,18 +24696,18 @@ var getFoodIng = function () {
                 }, _callee, this);
             }));
 
-            function getFood() {
+            function getRecipe() {
                 return _ref.apply(this, arguments);
             }
 
-            return getFood;
+            return getRecipe;
         }()
     }]);
 
-    return getFoodIng;
+    return Recipe;
 }();
 
-exports.default = getFoodIng;
+exports.default = Recipe;
 },{"axios":"..\\node_modules\\axios\\index.js"}],"js\\index.js":[function(require,module,exports) {
 'use strict';
 
@@ -24876,6 +24921,8 @@ var searchFoodView = _interopRequireWildcard(_searchFoodView);
 
 var _base = require('./views/base');
 
+var _getFoodIngView = require('./views/getFoodIngView');
+
 var _GetFoodIng = require('./models/GetFoodIng');
 
 var _GetFoodIng2 = _interopRequireDefault(_GetFoodIng);
@@ -24911,7 +24958,7 @@ var controlSearchFood = function () {
 
                         // search for food
                         state.search = new _SearchFood2.default(searchQuery);
-                        (0, _base.renderLoader)(_base.DOMElements.recipeResults);
+                        (0, _base.renderLoader)(_base.DOMElements.foodResults, 'food');
                         // add to state the recipes
                         _context.next = 9;
                         return state.search.getFood();
@@ -24942,7 +24989,63 @@ var controlSearchFood = function () {
         return _ref.apply(this, arguments);
     };
 }();
+var controlRecipe = function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var id;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+                switch (_context2.prev = _context2.next) {
+                    case 0:
+                        id = window.location.hash.replace('#', '');
 
+
+                        (0, _getFoodIngView.clearRenderRecipe)();
+                        // CHECK IF ID EXIST
+
+                        if (!id) {
+                            _context2.next = 15;
+                            break;
+                        }
+
+                        _context2.prev = 3;
+
+                        (0, _base.renderLoader)(_base.DOMElements.recipeResults, 'recipe');
+
+                        state.newRecipe = new _GetFoodIng2.default(id);
+                        // GET RECIPE INGRIDIENTS
+                        _context2.next = 8;
+                        return state.newRecipe.getRecipe();
+
+                    case 8:
+                        (0, _base.clearLoader)();
+
+                        // RENDER RECIPE TO THE DOM
+                        (0, _getFoodIngView.renderRecipe)(state.newRecipe.recipe);
+                        _context2.next = 15;
+                        break;
+
+                    case 12:
+                        _context2.prev = 12;
+                        _context2.t0 = _context2['catch'](3);
+
+                        console.log(_context2.t0);
+
+                    case 15:
+                    case 'end':
+                        return _context2.stop();
+                }
+            }
+        }, _callee2, _this, [[3, 12]]);
+    }));
+
+    return function controlRecipe() {
+        return _ref2.apply(this, arguments);
+    };
+}();
+
+document.addEventListener('keypress', function (e) {
+    (0, _base.pressEnter)(e, controlSearchFood);
+});
 _base.DOMElements.searchInputIcon.addEventListener('click', function (e) {
     controlSearchFood();
 });
@@ -24951,14 +25054,10 @@ window.addEventListener('load', function (e) {
     (0, _famousChefQuotesViews.renderRandomQuote)(quote.pickRandomQuote());
 });
 
-document.addEventListener('keypress', function (e) {
-    (0, _base.pressEnter)(e, controlSearchFood);
+window.addEventListener('hashchange', function () {
+    controlRecipe();
 });
-
-var x = new _GetFoodIng2.default(12);
-
-x.getFood();
-},{"core-js/modules/es6.typed.array-buffer":"..\\node_modules\\core-js\\modules\\es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array":"..\\node_modules\\core-js\\modules\\es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array":"..\\node_modules\\core-js\\modules\\es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array":"..\\node_modules\\core-js\\modules\\es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array":"..\\node_modules\\core-js\\modules\\es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array":"..\\node_modules\\core-js\\modules\\es6.typed.float64-array.js","core-js/modules/es6.map":"..\\node_modules\\core-js\\modules\\es6.map.js","core-js/modules/es6.set":"..\\node_modules\\core-js\\modules\\es6.set.js","core-js/modules/es6.weak-map":"..\\node_modules\\core-js\\modules\\es6.weak-map.js","core-js/modules/es6.weak-set":"..\\node_modules\\core-js\\modules\\es6.weak-set.js","core-js/modules/es6.reflect.apply":"..\\node_modules\\core-js\\modules\\es6.reflect.apply.js","core-js/modules/es6.reflect.construct":"..\\node_modules\\core-js\\modules\\es6.reflect.construct.js","core-js/modules/es6.reflect.define-property":"..\\node_modules\\core-js\\modules\\es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property":"..\\node_modules\\core-js\\modules\\es6.reflect.delete-property.js","core-js/modules/es6.reflect.get":"..\\node_modules\\core-js\\modules\\es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor":"..\\node_modules\\core-js\\modules\\es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of":"..\\node_modules\\core-js\\modules\\es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has":"..\\node_modules\\core-js\\modules\\es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible":"..\\node_modules\\core-js\\modules\\es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys":"..\\node_modules\\core-js\\modules\\es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions":"..\\node_modules\\core-js\\modules\\es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set":"..\\node_modules\\core-js\\modules\\es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of":"..\\node_modules\\core-js\\modules\\es6.reflect.set-prototype-of.js","core-js/modules/es6.promise":"..\\node_modules\\core-js\\modules\\es6.promise.js","core-js/modules/es6.symbol":"..\\node_modules\\core-js\\modules\\es6.symbol.js","core-js/modules/es6.object.freeze":"..\\node_modules\\core-js\\modules\\es6.object.freeze.js","core-js/modules/es6.object.seal":"..\\node_modules\\core-js\\modules\\es6.object.seal.js","core-js/modules/es6.object.prevent-extensions":"..\\node_modules\\core-js\\modules\\es6.object.prevent-extensions.js","core-js/modules/es6.object.is-frozen":"..\\node_modules\\core-js\\modules\\es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed":"..\\node_modules\\core-js\\modules\\es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible":"..\\node_modules\\core-js\\modules\\es6.object.is-extensible.js","core-js/modules/es6.object.get-own-property-descriptor":"..\\node_modules\\core-js\\modules\\es6.object.get-own-property-descriptor.js","core-js/modules/es6.object.get-prototype-of":"..\\node_modules\\core-js\\modules\\es6.object.get-prototype-of.js","core-js/modules/es6.object.keys":"..\\node_modules\\core-js\\modules\\es6.object.keys.js","core-js/modules/es6.object.get-own-property-names":"..\\node_modules\\core-js\\modules\\es6.object.get-own-property-names.js","core-js/modules/es6.object.assign":"..\\node_modules\\core-js\\modules\\es6.object.assign.js","core-js/modules/es6.object.is":"..\\node_modules\\core-js\\modules\\es6.object.is.js","core-js/modules/es6.object.set-prototype-of":"..\\node_modules\\core-js\\modules\\es6.object.set-prototype-of.js","core-js/modules/es6.function.name":"..\\node_modules\\core-js\\modules\\es6.function.name.js","core-js/modules/es6.string.raw":"..\\node_modules\\core-js\\modules\\es6.string.raw.js","core-js/modules/es6.string.from-code-point":"..\\node_modules\\core-js\\modules\\es6.string.from-code-point.js","core-js/modules/es6.string.code-point-at":"..\\node_modules\\core-js\\modules\\es6.string.code-point-at.js","core-js/modules/es6.string.repeat":"..\\node_modules\\core-js\\modules\\es6.string.repeat.js","core-js/modules/es6.string.starts-with":"..\\node_modules\\core-js\\modules\\es6.string.starts-with.js","core-js/modules/es6.string.ends-with":"..\\node_modules\\core-js\\modules\\es6.string.ends-with.js","core-js/modules/es6.string.includes":"..\\node_modules\\core-js\\modules\\es6.string.includes.js","core-js/modules/es6.regexp.flags":"..\\node_modules\\core-js\\modules\\es6.regexp.flags.js","core-js/modules/es6.regexp.match":"..\\node_modules\\core-js\\modules\\es6.regexp.match.js","core-js/modules/es6.regexp.replace":"..\\node_modules\\core-js\\modules\\es6.regexp.replace.js","core-js/modules/es6.regexp.split":"..\\node_modules\\core-js\\modules\\es6.regexp.split.js","core-js/modules/es6.regexp.search":"..\\node_modules\\core-js\\modules\\es6.regexp.search.js","core-js/modules/es6.array.from":"..\\node_modules\\core-js\\modules\\es6.array.from.js","core-js/modules/es6.array.of":"..\\node_modules\\core-js\\modules\\es6.array.of.js","core-js/modules/es6.array.copy-within":"..\\node_modules\\core-js\\modules\\es6.array.copy-within.js","core-js/modules/es6.array.find":"..\\node_modules\\core-js\\modules\\es6.array.find.js","core-js/modules/es6.array.find-index":"..\\node_modules\\core-js\\modules\\es6.array.find-index.js","core-js/modules/es6.array.fill":"..\\node_modules\\core-js\\modules\\es6.array.fill.js","core-js/modules/es6.array.iterator":"..\\node_modules\\core-js\\modules\\es6.array.iterator.js","core-js/modules/es6.number.is-finite":"..\\node_modules\\core-js\\modules\\es6.number.is-finite.js","core-js/modules/es6.number.is-integer":"..\\node_modules\\core-js\\modules\\es6.number.is-integer.js","core-js/modules/es6.number.is-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.is-safe-integer.js","core-js/modules/es6.number.is-nan":"..\\node_modules\\core-js\\modules\\es6.number.is-nan.js","core-js/modules/es6.number.epsilon":"..\\node_modules\\core-js\\modules\\es6.number.epsilon.js","core-js/modules/es6.number.min-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.min-safe-integer.js","core-js/modules/es6.number.max-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.max-safe-integer.js","core-js/modules/es6.math.acosh":"..\\node_modules\\core-js\\modules\\es6.math.acosh.js","core-js/modules/es6.math.asinh":"..\\node_modules\\core-js\\modules\\es6.math.asinh.js","core-js/modules/es6.math.atanh":"..\\node_modules\\core-js\\modules\\es6.math.atanh.js","core-js/modules/es6.math.cbrt":"..\\node_modules\\core-js\\modules\\es6.math.cbrt.js","core-js/modules/es6.math.clz32":"..\\node_modules\\core-js\\modules\\es6.math.clz32.js","core-js/modules/es6.math.cosh":"..\\node_modules\\core-js\\modules\\es6.math.cosh.js","core-js/modules/es6.math.expm1":"..\\node_modules\\core-js\\modules\\es6.math.expm1.js","core-js/modules/es6.math.fround":"..\\node_modules\\core-js\\modules\\es6.math.fround.js","core-js/modules/es6.math.hypot":"..\\node_modules\\core-js\\modules\\es6.math.hypot.js","core-js/modules/es6.math.imul":"..\\node_modules\\core-js\\modules\\es6.math.imul.js","core-js/modules/es6.math.log1p":"..\\node_modules\\core-js\\modules\\es6.math.log1p.js","core-js/modules/es6.math.log10":"..\\node_modules\\core-js\\modules\\es6.math.log10.js","core-js/modules/es6.math.log2":"..\\node_modules\\core-js\\modules\\es6.math.log2.js","core-js/modules/es6.math.sign":"..\\node_modules\\core-js\\modules\\es6.math.sign.js","core-js/modules/es6.math.sinh":"..\\node_modules\\core-js\\modules\\es6.math.sinh.js","core-js/modules/es6.math.tanh":"..\\node_modules\\core-js\\modules\\es6.math.tanh.js","core-js/modules/es6.math.trunc":"..\\node_modules\\core-js\\modules\\es6.math.trunc.js","core-js/modules/es7.array.includes":"..\\node_modules\\core-js\\modules\\es7.array.includes.js","core-js/modules/es7.object.values":"..\\node_modules\\core-js\\modules\\es7.object.values.js","core-js/modules/es7.object.entries":"..\\node_modules\\core-js\\modules\\es7.object.entries.js","core-js/modules/es7.object.get-own-property-descriptors":"..\\node_modules\\core-js\\modules\\es7.object.get-own-property-descriptors.js","core-js/modules/es7.string.pad-start":"..\\node_modules\\core-js\\modules\\es7.string.pad-start.js","core-js/modules/es7.string.pad-end":"..\\node_modules\\core-js\\modules\\es7.string.pad-end.js","core-js/modules/web.timers":"..\\node_modules\\core-js\\modules\\web.timers.js","core-js/modules/web.immediate":"..\\node_modules\\core-js\\modules\\web.immediate.js","core-js/modules/web.dom.iterable":"..\\node_modules\\core-js\\modules\\web.dom.iterable.js","regenerator-runtime/runtime":"..\\node_modules\\regenerator-runtime\\runtime.js","./models/famousChefQuotes":"js\\models\\famousChefQuotes.js","./views/famousChefQuotesViews":"js\\views\\famousChefQuotesViews.js","./models/SearchFood":"js\\models\\SearchFood.js","./views/searchFoodView":"js\\views\\searchFoodView.js","./views/base":"js\\views\\base.js","./models/GetFoodIng":"js\\models\\GetFoodIng.js"}],"..\\..\\..\\..\\AppData\\Roaming\\npm\\node_modules\\parcel-bundler\\src\\builtins\\hmr-runtime.js":[function(require,module,exports) {
+},{"core-js/modules/es6.typed.array-buffer":"..\\node_modules\\core-js\\modules\\es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array":"..\\node_modules\\core-js\\modules\\es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array":"..\\node_modules\\core-js\\modules\\es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array":"..\\node_modules\\core-js\\modules\\es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array":"..\\node_modules\\core-js\\modules\\es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array":"..\\node_modules\\core-js\\modules\\es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array":"..\\node_modules\\core-js\\modules\\es6.typed.float64-array.js","core-js/modules/es6.map":"..\\node_modules\\core-js\\modules\\es6.map.js","core-js/modules/es6.set":"..\\node_modules\\core-js\\modules\\es6.set.js","core-js/modules/es6.weak-map":"..\\node_modules\\core-js\\modules\\es6.weak-map.js","core-js/modules/es6.weak-set":"..\\node_modules\\core-js\\modules\\es6.weak-set.js","core-js/modules/es6.reflect.apply":"..\\node_modules\\core-js\\modules\\es6.reflect.apply.js","core-js/modules/es6.reflect.construct":"..\\node_modules\\core-js\\modules\\es6.reflect.construct.js","core-js/modules/es6.reflect.define-property":"..\\node_modules\\core-js\\modules\\es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property":"..\\node_modules\\core-js\\modules\\es6.reflect.delete-property.js","core-js/modules/es6.reflect.get":"..\\node_modules\\core-js\\modules\\es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor":"..\\node_modules\\core-js\\modules\\es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of":"..\\node_modules\\core-js\\modules\\es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has":"..\\node_modules\\core-js\\modules\\es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible":"..\\node_modules\\core-js\\modules\\es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys":"..\\node_modules\\core-js\\modules\\es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions":"..\\node_modules\\core-js\\modules\\es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set":"..\\node_modules\\core-js\\modules\\es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of":"..\\node_modules\\core-js\\modules\\es6.reflect.set-prototype-of.js","core-js/modules/es6.promise":"..\\node_modules\\core-js\\modules\\es6.promise.js","core-js/modules/es6.symbol":"..\\node_modules\\core-js\\modules\\es6.symbol.js","core-js/modules/es6.object.freeze":"..\\node_modules\\core-js\\modules\\es6.object.freeze.js","core-js/modules/es6.object.seal":"..\\node_modules\\core-js\\modules\\es6.object.seal.js","core-js/modules/es6.object.prevent-extensions":"..\\node_modules\\core-js\\modules\\es6.object.prevent-extensions.js","core-js/modules/es6.object.is-frozen":"..\\node_modules\\core-js\\modules\\es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed":"..\\node_modules\\core-js\\modules\\es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible":"..\\node_modules\\core-js\\modules\\es6.object.is-extensible.js","core-js/modules/es6.object.get-own-property-descriptor":"..\\node_modules\\core-js\\modules\\es6.object.get-own-property-descriptor.js","core-js/modules/es6.object.get-prototype-of":"..\\node_modules\\core-js\\modules\\es6.object.get-prototype-of.js","core-js/modules/es6.object.keys":"..\\node_modules\\core-js\\modules\\es6.object.keys.js","core-js/modules/es6.object.get-own-property-names":"..\\node_modules\\core-js\\modules\\es6.object.get-own-property-names.js","core-js/modules/es6.object.assign":"..\\node_modules\\core-js\\modules\\es6.object.assign.js","core-js/modules/es6.object.is":"..\\node_modules\\core-js\\modules\\es6.object.is.js","core-js/modules/es6.object.set-prototype-of":"..\\node_modules\\core-js\\modules\\es6.object.set-prototype-of.js","core-js/modules/es6.function.name":"..\\node_modules\\core-js\\modules\\es6.function.name.js","core-js/modules/es6.string.raw":"..\\node_modules\\core-js\\modules\\es6.string.raw.js","core-js/modules/es6.string.from-code-point":"..\\node_modules\\core-js\\modules\\es6.string.from-code-point.js","core-js/modules/es6.string.code-point-at":"..\\node_modules\\core-js\\modules\\es6.string.code-point-at.js","core-js/modules/es6.string.repeat":"..\\node_modules\\core-js\\modules\\es6.string.repeat.js","core-js/modules/es6.string.starts-with":"..\\node_modules\\core-js\\modules\\es6.string.starts-with.js","core-js/modules/es6.string.ends-with":"..\\node_modules\\core-js\\modules\\es6.string.ends-with.js","core-js/modules/es6.string.includes":"..\\node_modules\\core-js\\modules\\es6.string.includes.js","core-js/modules/es6.regexp.flags":"..\\node_modules\\core-js\\modules\\es6.regexp.flags.js","core-js/modules/es6.regexp.match":"..\\node_modules\\core-js\\modules\\es6.regexp.match.js","core-js/modules/es6.regexp.replace":"..\\node_modules\\core-js\\modules\\es6.regexp.replace.js","core-js/modules/es6.regexp.split":"..\\node_modules\\core-js\\modules\\es6.regexp.split.js","core-js/modules/es6.regexp.search":"..\\node_modules\\core-js\\modules\\es6.regexp.search.js","core-js/modules/es6.array.from":"..\\node_modules\\core-js\\modules\\es6.array.from.js","core-js/modules/es6.array.of":"..\\node_modules\\core-js\\modules\\es6.array.of.js","core-js/modules/es6.array.copy-within":"..\\node_modules\\core-js\\modules\\es6.array.copy-within.js","core-js/modules/es6.array.find":"..\\node_modules\\core-js\\modules\\es6.array.find.js","core-js/modules/es6.array.find-index":"..\\node_modules\\core-js\\modules\\es6.array.find-index.js","core-js/modules/es6.array.fill":"..\\node_modules\\core-js\\modules\\es6.array.fill.js","core-js/modules/es6.array.iterator":"..\\node_modules\\core-js\\modules\\es6.array.iterator.js","core-js/modules/es6.number.is-finite":"..\\node_modules\\core-js\\modules\\es6.number.is-finite.js","core-js/modules/es6.number.is-integer":"..\\node_modules\\core-js\\modules\\es6.number.is-integer.js","core-js/modules/es6.number.is-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.is-safe-integer.js","core-js/modules/es6.number.is-nan":"..\\node_modules\\core-js\\modules\\es6.number.is-nan.js","core-js/modules/es6.number.epsilon":"..\\node_modules\\core-js\\modules\\es6.number.epsilon.js","core-js/modules/es6.number.min-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.min-safe-integer.js","core-js/modules/es6.number.max-safe-integer":"..\\node_modules\\core-js\\modules\\es6.number.max-safe-integer.js","core-js/modules/es6.math.acosh":"..\\node_modules\\core-js\\modules\\es6.math.acosh.js","core-js/modules/es6.math.asinh":"..\\node_modules\\core-js\\modules\\es6.math.asinh.js","core-js/modules/es6.math.atanh":"..\\node_modules\\core-js\\modules\\es6.math.atanh.js","core-js/modules/es6.math.cbrt":"..\\node_modules\\core-js\\modules\\es6.math.cbrt.js","core-js/modules/es6.math.clz32":"..\\node_modules\\core-js\\modules\\es6.math.clz32.js","core-js/modules/es6.math.cosh":"..\\node_modules\\core-js\\modules\\es6.math.cosh.js","core-js/modules/es6.math.expm1":"..\\node_modules\\core-js\\modules\\es6.math.expm1.js","core-js/modules/es6.math.fround":"..\\node_modules\\core-js\\modules\\es6.math.fround.js","core-js/modules/es6.math.hypot":"..\\node_modules\\core-js\\modules\\es6.math.hypot.js","core-js/modules/es6.math.imul":"..\\node_modules\\core-js\\modules\\es6.math.imul.js","core-js/modules/es6.math.log1p":"..\\node_modules\\core-js\\modules\\es6.math.log1p.js","core-js/modules/es6.math.log10":"..\\node_modules\\core-js\\modules\\es6.math.log10.js","core-js/modules/es6.math.log2":"..\\node_modules\\core-js\\modules\\es6.math.log2.js","core-js/modules/es6.math.sign":"..\\node_modules\\core-js\\modules\\es6.math.sign.js","core-js/modules/es6.math.sinh":"..\\node_modules\\core-js\\modules\\es6.math.sinh.js","core-js/modules/es6.math.tanh":"..\\node_modules\\core-js\\modules\\es6.math.tanh.js","core-js/modules/es6.math.trunc":"..\\node_modules\\core-js\\modules\\es6.math.trunc.js","core-js/modules/es7.array.includes":"..\\node_modules\\core-js\\modules\\es7.array.includes.js","core-js/modules/es7.object.values":"..\\node_modules\\core-js\\modules\\es7.object.values.js","core-js/modules/es7.object.entries":"..\\node_modules\\core-js\\modules\\es7.object.entries.js","core-js/modules/es7.object.get-own-property-descriptors":"..\\node_modules\\core-js\\modules\\es7.object.get-own-property-descriptors.js","core-js/modules/es7.string.pad-start":"..\\node_modules\\core-js\\modules\\es7.string.pad-start.js","core-js/modules/es7.string.pad-end":"..\\node_modules\\core-js\\modules\\es7.string.pad-end.js","core-js/modules/web.timers":"..\\node_modules\\core-js\\modules\\web.timers.js","core-js/modules/web.immediate":"..\\node_modules\\core-js\\modules\\web.immediate.js","core-js/modules/web.dom.iterable":"..\\node_modules\\core-js\\modules\\web.dom.iterable.js","regenerator-runtime/runtime":"..\\node_modules\\regenerator-runtime\\runtime.js","./models/famousChefQuotes":"js\\models\\famousChefQuotes.js","./views/famousChefQuotesViews":"js\\views\\famousChefQuotesViews.js","./models/SearchFood":"js\\models\\SearchFood.js","./views/searchFoodView":"js\\views\\searchFoodView.js","./views/base":"js\\views\\base.js","./views/getFoodIngView":"js\\views\\getFoodIngView.js","./models/GetFoodIng":"js\\models\\GetFoodIng.js"}],"..\\..\\..\\..\\AppData\\Roaming\\npm\\node_modules\\parcel-bundler\\src\\builtins\\hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -24987,7 +25086,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '11487' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '24347' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

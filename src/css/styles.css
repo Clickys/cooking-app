@@ -109,10 +109,16 @@ body {
     margin-top: -2.6rem;
     font-size: 0.7rem;
 }
+.list-ing {
+    padding: 2px;
+    margin-bottom: 2rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
 /* LOADTER */
 
 .loader {
-    width: 5rem;
+    width: 10rem;
     animation-name: loaderAnimation;
     animation-duration: 0.7s;
     animation-iteration-count: infinite;
