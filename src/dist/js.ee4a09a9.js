@@ -24623,14 +24623,30 @@ exports.renderRecipe = exports.createIng = exports.clearRenderRecipe = undefined
 
 var _base = require('./base');
 
+var ingredientsObject = new Map();
+ingredientsObject.set('cup', '<i class="fas fa-coffee"></i>');
+ingredientsObject.set('cups', '<i class="fas fa-coffee"></i>');
+ingredientsObject.set('tablespoons', '<i class="fas fa-utensil-spoon"></i>');
+ingredientsObject.set('teaspoon', '<i class="fas fa-utensil-spoon"></i>');
+ingredientsObject.set('teaspoons', '<i class="fas fa-utensil-spoon"></i>');
+
 var clearRenderRecipe = exports.clearRenderRecipe = function clearRenderRecipe() {
     _base.DOMElements.recipeResults.innerHTML = '';
 };
-var createIng = exports.createIng = function createIng(ing) {
-    return '\n        <li class="list-group-item list-ing">\n            <i class="far fa-circle"></i> ' + ing + '\n        </li>\n        ';
+
+var addMessures = function addMessures(ing) {
+    return ing.split(' ').map(function (el) {
+        if (ingredientsObject.has(el)) {
+            return ingredientsObject.get(el);
+        }
+        return el;
+    }).join(' ');
 };
 
-var addMessures = function addMessures(ing) {};
+var createIng = exports.createIng = function createIng(ing) {
+    return '\n        <li class="list-group-item list-ing text-left">\n            <i class="far fa-circle"></i> ' + addMessures(ing) + '\n        </li>\n        ';
+};
+
 var renderRecipe = exports.renderRecipe = function renderRecipe(recipe) {
     var ingSize = recipe.ingredients.length / 2;
     var markup = '\n    <div class="card">\n    <img src="' + recipe.image_url + '" alt="" class="card-img-top" width="200" height="200">\n    <h3 class="ing-title text-center">\n        <span>' + recipe.title + '</span>\n    </h3>\n    <div class="recipe-like mb-5 mx-auto d-flex align-items-center justify-content-center">\n        <i class="far fa-heart fa-2x"></i>\n    </div>\n    <div class="card-body">\n        <div class="ingredients-body">\n            <div class="row recipe-card-details">\n                <div class="col-6">\n                    <ul class="list-group list-group-flush">\n                        ' + recipe.ingredients.slice(0, ingSize).map(function (el) {
@@ -25086,7 +25102,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '24347' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '44307' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

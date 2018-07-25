@@ -1,15 +1,32 @@
 import { DOMElements } from './base';
 
+const ingredientsObject = new Map();
+ingredientsObject.set( 'cup', '<i class="fas fa-coffee"></i>' );
+ingredientsObject.set( 'cups', '<i class="fas fa-coffee"></i>' );
+ingredientsObject.set( 'tablespoons', '<i class="fas fa-utensil-spoon"></i>' );
+ingredientsObject.set( 'teaspoon', '<i class="fas fa-utensil-spoon"></i>' );
+ingredientsObject.set( 'teaspoons', '<i class="fas fa-utensil-spoon"></i>' );
+
 export const clearRenderRecipe = () => {
     DOMElements.recipeResults.innerHTML = '';
 };
+
+const addMessures = ing => ing
+    .split( ' ' )
+    .map( ( el ) => {
+        if ( ingredientsObject.has( el ) ) {
+            return ingredientsObject.get( el );
+        }
+        return el;
+    } )
+    .join( ' ' );
+
 export const createIng = ing => `
-        <li class="list-group-item list-ing">
-            <i class="far fa-circle"></i> ${ ing }
+        <li class="list-group-item list-ing text-left">
+            <i class="far fa-circle"></i> ${ addMessures( ing ) }
         </li>
         `;
 
-const addMessures = ( ing ) => {};
 export const renderRecipe = ( recipe ) => {
     const ingSize = recipe.ingredients.length / 2;
     const markup = `
